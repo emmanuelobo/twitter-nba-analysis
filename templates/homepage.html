@@ -3,16 +3,43 @@
 <head>
     <meta charset="UTF-8">
     <title>Home</title>
+    <link rel="stylesheet" href="./static/node_modules/bootstrap/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="./static/style.css">
+    <script src="./static/node_modules/jquery/dist/jquery.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.0.4/socket.io.slim.js"></script>
 </head>
 <body>
-    <h1>Twitter NBA Sentiment Analysis</h1>
-    <p>Current User: {{user.screen_name}}</p>
-    <p>Name: {{user.name}}</p>
-    <p>Following: {{user.following}}</p>
-    <p>Followers: {{user.followers_count}}</p>
-    <p>Verified: {{user.verified}}</p>
+<div class = "container">
+    <div class="row" style="text-align: center;">
+        <h1>Twitter NBA Sentiment Analysis</h1>
+    </div>
 
-    <h1>Timeline</h1>
-    <p>{{timeline}}</p>
+    <div class="row">
+        <div class="col-md-12">
+            <div id="nba-stream">
+                <div class="card custom-card">
+                  <div class="card-block">
+                    <h4 class="card-title">NBA Tweets</h4>
+                    <p class="card-text" id="stream-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
+
+                  </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
 </body>
 </html>
+
+<script>
+    var socket = io();
+    socket.on('connect', function() {
+        console.log('I\'m finally connected')
+    });
+
+    socket.on('stream', function(data){
+        console.log('Tweet: ' + data.tweet)
+        $('#stream-text').html(data.tweet)
+    })
+</script>
