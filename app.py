@@ -1,5 +1,6 @@
 from flask import Flask, render_template
 from threading import Lock
+import re
 from flask_socketio import SocketIO, emit
 import tweepy
 from decouple import config
@@ -33,22 +34,38 @@ streamListener = NBAStreamListener
 myStream = tweepy.Stream(auth=api.auth, listener=streamListener())
 tweet_sentiment = None
 
+
+def parse_link(tweet):
+	pass
+
+
 def background_process():
 	count = 0
-	nba_tweets = api.search('nba')
+	nba_tweets = api.search(q='nba', tweet_mode='extended')
+
+	hodApp = HODApps.ANALYZE_SENTIMENT
+	paramArr = {}
+	paramArr["lang"] = "eng"
+	context = {"hodapp": hodApp}
 	while True:
 		try:
+			global tweet_sentiment
+			print(nba_tweets[count]._json['full_text'])
+			paramArr["text"] = nba_tweets[count]._json['full_text']
+			client.post_request(params=paramArr, hodApp=hodApp, async=False, callback=callback, **context)
 			socketio.sleep(5)
-			socketio.emit('stream', {'tweet': nba_tweets[count]._json['text'], 'count': count})
+			socketio.emit('stream',
+						  {'tweet': nba_tweets[count]._json['full_text'], 'count': count, 'sentiment': tweet_sentiment})
 			count += 1
 		except IndexError:
-			socketio.sleep(5)
-			socketio.emit('stream', {'tweet': nba_tweets[count]._json['text'], 'count': count})
-			count += 1
+			continue
+
 
 def callback(response, **context):
 	payload = parser.parse_payload(response)
-	print(payload)
+	global tweet_sentiment
+	tweet_sentiment = payload['aggregate']['sentiment']
+	print(payload['aggregate']['sentiment'])
 
 
 @socketio.on('connect')
@@ -60,19 +77,8 @@ def handle_connection():
 		print('Connection Established')
 
 
-@socketio.on('stream event')
-def handle_tweet_stream(message):
-	emit('stream', message)
-
 @app.route('/')
 def home():
-	text = ["I like dogs. They are loyal animals."]
-	hodApp = HODApps.ANALYZE_SENTIMENT
-	paramArr = {}
-	paramArr["text"] = text
-	paramArr["lang"] = "eng"
-	context = {"hodapp": hodApp}
-	client.post_request(params=paramArr, hodApp=hodApp, async=False, callback=callback, **context)
 	return render_template('homepage.html')
 
 

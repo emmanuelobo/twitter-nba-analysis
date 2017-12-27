@@ -21,7 +21,7 @@
                   <div class="card-block">
                     <h4 class="card-title">NBA Tweets</h4>
                     <p class="card-text" id="stream-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
-
+                    <span id="sentiment"></span>
                   </div>
                 </div>
             </div>
@@ -41,5 +41,6 @@
     socket.on('stream', function(data){
         console.log('Tweet: ' + data.tweet)
         $('#stream-text').html(data.tweet)
+        $('#sentiment').html(data.sentiment)
     })
 </script>
