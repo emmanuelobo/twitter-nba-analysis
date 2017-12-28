@@ -7,3 +7,12 @@
     width: 900px !important;
     padding: 3% !important;
 }
+
+body{
+    background-color: black;
+    color: #fff;
+}
+
+.card-text{
+    font-size: 24px;
+}

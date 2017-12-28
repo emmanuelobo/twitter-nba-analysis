@@ -36,6 +36,11 @@ tweet_sentiment = None
 
 
 def parse_link(tweet):
+	'''
+	Remove the link from the tweet for a more accurate sentiment analysis
+	:param tweet:
+	:return:
+	'''
 	pass
 
 
