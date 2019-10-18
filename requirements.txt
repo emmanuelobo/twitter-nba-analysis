@@ -10,7 +10,7 @@ Jinja2==2.10
 MarkupSafe==1.0
 oauthlib==2.0.6
 python-decouple==3.1
-python-engineio==2.0.1
+python-engineio==3.8.2.post1
 python-socketio==1.8.4
 requests==2.18.4
 requests-oauthlib==0.8.0
